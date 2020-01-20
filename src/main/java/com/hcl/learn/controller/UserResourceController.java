@@ -40,7 +40,7 @@ public class UserResourceController {
 		User user = userDaoService.findOne(id);
 		if (user == null)
 			throw new UserNotFoundException("id-" + id);
-
+		//HATEOAS example
 		EntityModel<User> userModel = new EntityModel<>(user);
 		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
 		userModel.add(linkTo.withRel("all-users"));
