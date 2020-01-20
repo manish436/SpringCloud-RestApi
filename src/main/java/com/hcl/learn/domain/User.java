@@ -10,9 +10,9 @@ public class User {
 	private Integer id;
 
 	@Size(min = 2)
-	private String name ="asdasd";
+	private String name;
 
-	@Past
+	@Past(message = "Date should be past only.")
 	private Date birthDate;
 
 	public User(Integer id, String name, Date birthDate) {
