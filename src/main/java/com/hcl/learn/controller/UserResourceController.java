@@ -1,5 +1,10 @@
 package com.hcl.learn.controller;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import java.net.URI;
 import java.util.List;
 
@@ -26,16 +31,21 @@ public class UserResourceController {
 	UserDaoService userDaoService;
 
 	@GetMapping(path = "/users")
-	public List<User> retriveAllUsers() {
+	public List<User> retrieveAllUsers() {
 		return userDaoService.findAll();
 	}
 
 	@GetMapping(path = "/users/{id}")
-	public User retriveUser(@PathVariable int id) {
+	public EntityModel<User> retrieveUser(@PathVariable int id) {
 		User user = userDaoService.findOne(id);
 		if (user == null)
 			throw new UserNotFoundException("id-" + id);
-		return user;
+
+		EntityModel<User> userModel = new EntityModel<>(user);
+		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+		userModel.add(linkTo.withRel("all-users"));
+
+		return userModel;
 	}
 
 	@PostMapping(path = "/users")
