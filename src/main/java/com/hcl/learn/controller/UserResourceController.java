@@ -1,9 +1,18 @@
 package com.hcl.learn.controller;
 
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+//import org.springframework.hateoas.EntityModel;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+//import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+//
+//import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import org.springframework.hateoas.Resource;
+
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -36,16 +45,16 @@ public class UserResourceController {
 	}
 
 	@GetMapping(path = "/users/{id}")
-	public EntityModel<User> retrieveUser(@PathVariable int id) {
+	public Resource<User> retrieveUser(@PathVariable int id) {
 		User user = userDaoService.findOne(id);
 		if (user == null)
 			throw new UserNotFoundException("id-" + id);
-		//HATEOAS example
-		EntityModel<User> userModel = new EntityModel<>(user);
-		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
-		userModel.add(linkTo.withRel("all-users"));
-
-		return userModel;
+		
+		// HATEOAS example
+		Resource<User> resource = new Resource<User>(user);
+		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+		resource.add(linkTo.withRel("all-users"));
+		return resource;
 	}
 
 	@PostMapping(path = "/users")
